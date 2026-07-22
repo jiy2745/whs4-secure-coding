@@ -1,0 +1,4 @@
+# 테스트 실행용 추가 패키지 (애플리케이션 구동에는 필요 없음)
+-r requirements.txt
+requests==2.34.2
+websocket-client==1.9.0

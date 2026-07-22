@@ -130,6 +130,7 @@ ngrok http 5000
 ## 5. 테스트
 
 ```bash
+pip install -r requirements-dev.txt   # 테스트용 패키지(requests 등) 설치
 bash tests/run_all.sh
 ```
 
