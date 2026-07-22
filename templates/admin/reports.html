@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}신고 관리{% endblock %}
+{% block content %}
+<div class="panel">
+  <h2>신고 관리</h2>
+  <div class="actions">
+    {% for key, label in [('pending','미처리'), ('resolved','처리 완료'), ('dismissed','기각'), ('all','전체')] %}
+      <a class="btn {{ 'btn-secondary' if status_filter != key }} btn-small"
+         href="{{ url_for('admin.reports', status=key) }}">{{ label }}</a>
+    {% endfor %}
+  </div>
+</div>
+
+<div class="panel">
+  <table>
+    <tr><th>일시</th><th>신고자</th><th>유형</th><th>대상</th><th>사유</th><th>상태</th><th>조치</th></tr>
+    {% for r in reports %}
+    <tr>
+      <td class="muted">{{ r.created_at }}</td>
+      <td>{{ r.reporter_name }}</td>
+      <td>{{ '상품' if r.target_type == 'product' else '사용자' }}</td>
+      <td class="break">
+        {% if r.target_type == 'product' %}
+          <a href="{{ url_for('products.detail', product_id=r.target_id) }}">{{ r.target_label or '(삭제됨)' }}</a>
+        {% else %}
+          <a href="{{ url_for('auth.profile', user_id=r.target_id) }}">{{ r.target_label or '(삭제됨)' }}</a>
+        {% endif %}
+      </td>
+      <td class="break">{{ r.reason }}</td>
+      <td>
+        {% if r.status == 'pending' %}<span class="badge badge-warn">미처리</span>
+        {% elif r.status == 'resolved' %}<span class="badge badge-ok">처리</span>
+        {% else %}<span class="badge badge-muted">기각</span>{% endif %}
+      </td>
+      <td>
+        {% if r.status == 'pending' %}
+        <form class="inline-form" method="post" action="{{ url_for('admin.report_action') }}">
+          {{ form.csrf_token }}
+          <input type="hidden" name="report_id" value="{{ r.id }}">
+          {{ form.action() }}
+          <button type="submit" class="btn-small">실행</button>
+        </form>
+        {% endif %}
+      </td>
+    </tr>
+    {% else %}
+    <tr><td colspan="7" class="muted">해당하는 신고가 없습니다.</td></tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock %}

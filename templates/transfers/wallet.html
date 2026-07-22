@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}지갑{% endblock %}
+{% block content %}
+<div class="panel">
+  <h2>내 지갑</h2>
+  <p class="price">{{ '{:,}'.format(current_user.balance) }}원</p>
+  <div class="actions">
+    <a class="btn" href="{{ url_for('transfers.transfer') }}">송금하기</a>
+  </div>
+</div>
+
+<div class="panel">
+  <h2>거래 내역</h2>
+  {% if history %}
+  <table>
+    <tr><th>일시</th><th>구분</th><th>상대</th><th>금액</th><th>메모</th><th>관련 상품</th></tr>
+    {% for t in history %}
+    <tr>
+      <td class="muted">{{ t.created_at }}</td>
+      <td>{% if t.sender_id == current_user.id %}
+            <span class="badge badge-danger">출금</span>
+          {% else %}
+            <span class="badge badge-ok">입금</span>
+          {% endif %}</td>
+      <td>{{ t.receiver_name if t.sender_id == current_user.id else t.sender_name }}</td>
+      <td class="price">{{ '{:,}'.format(t.amount) }}원</td>
+      <td class="break">{{ t.memo }}</td>
+      <td class="break muted">{{ t.product_title or '-' }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% else %}
+  <p class="muted">거래 내역이 없습니다.</p>
+  {% endif %}
+</div>
+{% endblock %}

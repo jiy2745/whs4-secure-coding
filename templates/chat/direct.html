@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% from "_macros.html" import render_field, status_badge %}
+{% block title %}{{ partner.username }}님과의 대화{% endblock %}
+{% block content %}
+<div class="panel">
+  <h2>{{ partner.username }}님과의 1:1 채팅
+    {% if partner.status != 'active' %}{{ status_badge(partner.status) }}{% endif %}
+  </h2>
+  <p class="muted">
+    <a href="{{ url_for('auth.profile', user_id=partner.id) }}">프로필 보기</a> ·
+    <a href="{{ url_for('chat.inbox') }}">쪽지함으로</a>
+  </p>
+
+  <div id="chat-root"
+       data-mode="direct"
+       data-me="{{ current_user.id }}"
+       data-partner="{{ partner.id }}"
+       data-maxlength="{{ config.MESSAGE_MAX }}"></div>
+
+  <div id="chat-log" class="chat-log">
+    {% for m in messages %}
+    <div class="chat-line {{ 'mine' if m.sender_id == current_user.id }}">
+      <span class="who">{{ m.username }}</span>
+      <span class="text">{{ m.content }}</span>
+      <span class="when">{{ m.created_at[11:16] }}</span>
+    </div>
+    {% else %}
+    <p class="muted">아직 대화가 없습니다.</p>
+    {% endfor %}
+  </div>
+
+  <form id="chat-form" class="chat-form">
+    <input id="chat-input" type="text" maxlength="{{ config.MESSAGE_MAX }}"
+           placeholder="메시지를 입력하세요" autocomplete="off">
+    <button type="submit">전송</button>
+  </form>
+  <p id="chat-status" class="chat-status"></p>
+
+  <details>
+    <summary class="muted">WebSocket 이 차단된 환경이면 여기로 전송</summary>
+    <form method="post" novalidate>
+      {{ form.csrf_token }}
+      {{ render_field(form.content, rows=2) }}
+      <button type="submit">폼으로 전송</button>
+    </form>
+  </details>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/socket.io.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/chat.js') }}"></script>
+{% endblock %}

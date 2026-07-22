@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}전체 채팅{% endblock %}
+{% block content %}
+<div class="panel">
+  <h2>전체 채팅</h2>
+  <p class="muted">
+    로그인한 모든 사용자가 함께 사용하는 채팅방입니다.
+    {{ config.CHAT_RATE_WINDOW }}초당 {{ config.CHAT_RATE_MAX }}건까지 보낼 수 있습니다.
+  </p>
+
+  <div id="chat-root"
+       data-mode="global"
+       data-me="{{ current_user.id }}"
+       data-maxlength="{{ config.MESSAGE_MAX }}"></div>
+
+  <div id="chat-log" class="chat-log">
+    {% for m in messages %}
+    <div class="chat-line {{ 'mine' if m.sender_id == current_user.id }}">
+      <span class="who">{{ m.username }}</span>
+      {# 과거 메시지도 autoescape 로 이스케이프되어 출력된다 #}
+      <span class="text">{{ m.content }}</span>
+      <span class="when">{{ m.created_at[11:16] }}</span>
+    </div>
+    {% endfor %}
+  </div>
+
+  <form id="chat-form" class="chat-form">
+    <input id="chat-input" type="text" maxlength="{{ config.MESSAGE_MAX }}"
+           placeholder="메시지를 입력하세요" autocomplete="off">
+    <button type="submit">전송</button>
+  </form>
+  <p id="chat-status" class="chat-status"></p>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/socket.io.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/chat.js') }}"></script>
+{% endblock %}

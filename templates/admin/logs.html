@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}감사 로그{% endblock %}
+{% block content %}
+<div class="panel">
+  <h2>감사 로그</h2>
+  <p class="muted">로그인/신고/송금/관리자 조치 등 보안 관련 행위가 기록됩니다. (비밀번호 등 민감 정보는 기록하지 않음)</p>
+  <form class="row" method="get" action="{{ url_for('admin.logs') }}">
+    <div class="field">
+      <label for="action">동작 검색</label>
+      <input id="action" type="search" name="action" value="{{ action_filter }}" maxlength="64"
+             placeholder="예: auth.login_failed">
+    </div>
+    <div><button type="submit">검색</button></div>
+  </form>
+</div>
+
+<div class="panel">
+  <table>
+    <tr><th>시각</th><th>행위자</th><th>동작</th><th>대상</th><th>상세</th><th>IP</th></tr>
+    {% for log in logs %}
+    <tr>
+      <td class="muted">{{ log.created_at }}</td>
+      <td>{{ log.username or '-' }}</td>
+      <td class="break">{{ log.action }}</td>
+      <td class="break muted">{{ log.target_type or '' }} {{ (log.target_id or '')[:8] }}</td>
+      <td class="break">{{ log.detail }}</td>
+      <td class="muted">{{ log.ip }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock %}

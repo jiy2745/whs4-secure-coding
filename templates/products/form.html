@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% from "_macros.html" import render_field %}
+{% block title %}{{ '상품 수정' if product else '상품 등록' }}{% endblock %}
+{% block content %}
+<div class="panel">
+  <h2>{{ '상품 수정' if product else '새 상품 등록' }}</h2>
+  {# 파일 업로드가 있으므로 enctype 필수 #}
+  <form method="post" enctype="multipart/form-data" novalidate>
+    {{ form.csrf_token }}
+    {{ render_field(form.title, placeholder="최대 " ~ config.PRODUCT_TITLE_MAX ~ "자") }}
+    {{ render_field(form.description, rows=6, placeholder="최대 " ~ config.PRODUCT_DESC_MAX ~ "자") }}
+    <div class="field">
+      {{ form.price.label }}
+      {{ form.price(type="number", min=config.PRICE_MIN, max=config.PRICE_MAX, step=1) }}
+      {% if form.price.errors %}
+      <ul class="errors">{% for e in form.price.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+      {% endif %}
+    </div>
+    <div class="field">
+      {{ form.image.label }}
+      {{ form.image(accept="image/png,image/jpeg,image/gif,image/webp") }}
+      <span class="muted">png/jpg/gif/webp, 최대 {{ config.MAX_CONTENT_LENGTH // 1024 // 1024 }}MB</span>
+      {% if form.image.errors %}
+      <ul class="errors">{% for e in form.image.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+      {% endif %}
+    </div>
+    {% if product and product.image_path %}
+    <div class="field">
+      <label>{{ form.remove_image() }} 기존 사진 삭제</label>
+    </div>
+    {% endif %}
+    <div class="actions">
+      <button type="submit">{{ '저장' if product else '등록' }}</button>
+      {% if product %}
+      <a class="btn btn-secondary" href="{{ url_for('products.detail', product_id=product.id) }}">취소</a>
+      {% else %}
+      <a class="btn btn-secondary" href="{{ url_for('products.index') }}">취소</a>
+      {% endif %}
+    </div>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}쪽지함{% endblock %}
+{% block content %}
+<div class="panel">
+  <h2>1:1 대화 목록</h2>
+  {% if threads %}
+  <table>
+    <tr><th>상대</th><th>마지막 메시지</th><th>시각</th></tr>
+    {% for t in threads %}
+    <tr>
+      <td><a href="{{ url_for('chat.direct_chat', user_id=t.partner_id) }}">{{ t.partner_name }}</a></td>
+      <td class="break muted">{{ (t.last_content or '')[:60] }}</td>
+      <td class="muted">{{ t.last_at }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% else %}
+  <p class="muted">
+    대화 내역이 없습니다. <a href="{{ url_for('auth.user_list') }}">사용자 목록</a>에서 대화를 시작해 보세요.
+  </p>
+  {% endif %}
+</div>
+{% endblock %}

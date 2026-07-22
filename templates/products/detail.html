@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% from "_macros.html" import status_badge %}
+{% block title %}{{ product.title }}{% endblock %}
+{% block content %}
+<div class="panel">
+  <h2>{{ product.title }} {{ status_badge(product.status) }}</h2>
+  <p class="price">{{ '{:,}'.format(product.price) }}원</p>
+
+  {% if product.image_path %}
+    <img class="detail-image"
+         src="{{ url_for('products.uploaded_file', filename=product.image_path) }}"
+         alt="{{ product.title }} 사진">
+  {% endif %}
+
+  {# 상품 설명: 사용자 입력이지만 autoescape 로 항상 텍스트로만 출력된다. |safe 금지 #}
+  <p class="break">{{ product.description }}</p>
+
+  <table>
+    <tr><th>판매자</th>
+        <td><a href="{{ url_for('auth.profile', user_id=product.seller_id) }}">{{ product.seller_name }}</a></td></tr>
+    <tr><th>등록일</th><td>{{ product.created_at }}</td></tr>
+    <tr><th>수정일</th><td>{{ product.updated_at }}</td></tr>
+    {% if is_owner or is_admin %}<tr><th>신고 누적</th><td>{{ product.report_count }}건</td></tr>{% endif %}
+  </table>
+
+  <div class="actions">
+    {% if current_user and not is_owner %}
+      <a class="btn" href="{{ url_for('chat.direct_chat', user_id=product.seller_id) }}">판매자와 1:1 채팅</a>
+      <a class="btn btn-secondary"
+         href="{{ url_for('transfers.transfer', to=product.seller_name, product_id=product.id) }}">송금하기</a>
+      <a class="btn btn-danger btn-small"
+         href="{{ url_for('reports.create', target_type='product', target_id=product.id) }}">상품 신고</a>
+    {% elif not current_user %}
+      <a class="btn" href="{{ url_for('auth.login', next=request.path) }}">로그인하고 거래하기</a>
+    {% endif %}
+
+    {% if is_owner or is_admin %}
+      <a class="btn btn-secondary" href="{{ url_for('products.edit', product_id=product.id) }}">수정</a>
+      <form class="inline-form" method="post"
+            action="{{ url_for('products.change_status', product_id=product.id) }}">
+        {{ status_form.csrf_token }}
+        {{ status_form.status() }}
+        <button type="submit" class="btn btn-secondary btn-small">상태 변경</button>
+      </form>
+      <form class="inline-form" method="post" action="{{ url_for('products.delete', product_id=product.id) }}">
+        {{ delete_form.csrf_token }}
+        <button type="submit" class="btn btn-danger btn-small">삭제</button>
+      </form>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

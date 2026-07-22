@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% from "_macros.html" import render_field %}
+{% block title %}회원가입{% endblock %}
+{% block content %}
+<div class="panel">
+  <h2>회원가입</h2>
+  <form method="post" novalidate>
+    {{ form.csrf_token }}
+    {{ render_field(form.username, autocomplete="username", placeholder="영문/숫자/밑줄 3~20자") }}
+    {{ render_field(form.password, autocomplete="new-password",
+                    placeholder=config.PASSWORD_MIN_LENGTH ~ "자 이상, 3종류 이상 문자 조합") }}
+    {{ render_field(form.password_confirm, autocomplete="new-password") }}
+    <div class="actions">
+      <button type="submit">가입하기</button>
+      <a class="btn btn-secondary" href="{{ url_for('auth.login') }}">로그인</a>
+    </div>
+  </form>
+  <p class="muted">가입 시 데모용 잔액 {{ '{:,}'.format(config.SIGNUP_BONUS) }}원이 지급됩니다.</p>
+</div>
+{% endblock %}

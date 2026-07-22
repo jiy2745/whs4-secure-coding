@@ -1,0 +1,20 @@
+# 비밀/런타임 데이터는 절대 커밋하지 않는다
+.env
+instance/
+*.db
+*.sqlite3
+*.log
+
+# 파이썬
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+*.egg-info/
+
+# 에디터/OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

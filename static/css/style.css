@@ -1,0 +1,127 @@
+:root {
+  --bg: #f6f7f9;
+  --panel: #ffffff;
+  --line: #e2e5ea;
+  --text: #1d2129;
+  --muted: #6b7280;
+  --accent: #2563eb;
+  --danger: #dc2626;
+  --warn: #d97706;
+  --ok: #059669;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans KR", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.55;
+}
+
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ---------- 레이아웃 ---------- */
+.topbar {
+  display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+  background: var(--panel); border-bottom: 1px solid var(--line);
+  padding: 10px 20px;
+}
+.brand { font-weight: 700; font-size: 1.1rem; color: var(--text); }
+.topbar nav { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-left: auto; }
+.whoami { color: var(--muted); font-size: .85rem; }
+.admin-link { color: var(--danger); font-weight: 600; }
+.container { max-width: 960px; margin: 24px auto; padding: 0 16px; }
+.footer { text-align: center; color: var(--muted); font-size: .8rem; padding: 24px 0; }
+
+/* ---------- 카드/패널 ---------- */
+.panel {
+  background: var(--panel); border: 1px solid var(--line);
+  border-radius: 10px; padding: 20px; margin-bottom: 20px;
+}
+.panel h2 { margin-top: 0; font-size: 1.1rem; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 16px; }
+.card {
+  background: var(--panel); border: 1px solid var(--line); border-radius: 10px;
+  overflow: hidden; display: flex; flex-direction: column;
+}
+.card .body { padding: 12px; }
+.card .title { font-weight: 600; margin: 0 0 6px; word-break: break-all; }
+.price { color: var(--accent); font-weight: 700; }
+.muted { color: var(--muted); font-size: .85rem; }
+
+.thumb { width: 100%; height: 150px; object-fit: cover; display: block; background: #eee; }
+.thumb-empty {
+  display: flex; align-items: center; justify-content: center;
+  color: var(--muted); font-size: .8rem; height: 150px; background: #eef0f3;
+}
+.detail-image { max-width: 100%; border-radius: 8px; border: 1px solid var(--line); }
+
+/* ---------- 폼 ---------- */
+.field { margin-bottom: 14px; display: flex; flex-direction: column; gap: 4px; }
+.field label { font-size: .85rem; font-weight: 600; color: #374151; }
+input[type=text], input[type=password], input[type=number], input[type=search],
+textarea, select {
+  padding: 9px 10px; border: 1px solid var(--line); border-radius: 6px;
+  font: inherit; background: #fff; width: 100%;
+}
+textarea { resize: vertical; min-height: 90px; }
+button, .btn {
+  padding: 9px 14px; border-radius: 6px; border: 1px solid var(--accent);
+  background: var(--accent); color: #fff; font: inherit; cursor: pointer;
+}
+button:hover, .btn:hover { filter: brightness(1.05); text-decoration: none; }
+.btn-secondary { background: #fff; color: var(--text); border-color: var(--line); }
+.btn-danger { background: var(--danger); border-color: var(--danger); }
+.btn-small { padding: 5px 9px; font-size: .8rem; }
+.linkish { background: none; border: none; color: var(--accent); cursor: pointer; padding: 0; font: inherit; }
+.inline-form { display: inline; }
+.row { display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end; }
+.row .field { flex: 1 1 140px; margin-bottom: 0; }
+.actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+
+.errors { color: var(--danger); font-size: .82rem; margin: 2px 0 0; padding-left: 18px; }
+
+/* ---------- 알림 ---------- */
+.flashes { list-style: none; padding: 0; margin: 0 0 16px; }
+.flash { padding: 10px 14px; border-radius: 8px; margin-bottom: 8px; border: 1px solid; }
+.flash-success { background: #ecfdf5; border-color: #a7f3d0; color: #065f46; }
+.flash-error   { background: #fef2f2; border-color: #fecaca; color: #991b1b; }
+.flash-info    { background: #eff6ff; border-color: #bfdbfe; color: #1e40af; }
+
+/* ---------- 배지/표 ---------- */
+.badge {
+  display: inline-block; padding: 2px 8px; border-radius: 999px;
+  font-size: .75rem; background: #eef0f3; color: #374151;
+}
+.badge-ok { background: #d1fae5; color: #065f46; }
+.badge-danger { background: #fee2e2; color: #991b1b; }
+.badge-warn { background: #fef3c7; color: #92400e; }
+.badge-muted { background: #e5e7eb; color: #4b5563; }
+
+table { width: 100%; border-collapse: collapse; font-size: .88rem; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { background: #f9fafb; font-size: .8rem; color: var(--muted); }
+td.break { word-break: break-all; }
+
+/* ---------- 채팅 ---------- */
+.chat-log {
+  height: 420px; overflow-y: auto; background: #fff; border: 1px solid var(--line);
+  border-radius: 8px; padding: 12px; margin-bottom: 12px;
+}
+.chat-line { margin-bottom: 8px; }
+.chat-line .who { font-weight: 600; margin-right: 6px; }
+.chat-line .when { color: var(--muted); font-size: .72rem; margin-left: 6px; }
+.chat-line .text { word-break: break-word; white-space: pre-wrap; }
+.chat-line.mine .who { color: var(--accent); }
+.chat-form { display: flex; gap: 8px; }
+.chat-form input[type=text] { flex: 1; }
+.chat-status { font-size: .8rem; color: var(--muted); min-height: 1.2em; }
+.chat-status.error { color: var(--danger); }
+
+.stats { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+.stat { background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 12px; }
+.stat .num { font-size: 1.4rem; font-weight: 700; }
+.pagination { display: flex; gap: 8px; justify-content: center; margin-top: 16px; }

@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% from "_macros.html" import render_field %}
+{% block title %}로그인{% endblock %}
+{% block content %}
+<div class="panel">
+  <h2>로그인</h2>
+  <form method="post" novalidate>
+    {{ form.csrf_token }}
+    {{ render_field(form.username, autocomplete="username") }}
+    {{ render_field(form.password, autocomplete="current-password") }}
+    <div class="actions">
+      <button type="submit">로그인</button>
+      <a class="btn btn-secondary" href="{{ url_for('auth.register') }}">회원가입</a>
+    </div>
+  </form>
+  <p class="muted">
+    로그인에 {{ config.LOGIN_MAX_FAILURES }}회 연속 실패하면 계정이
+    {{ config.LOGIN_LOCKOUT_MINUTES }}분간 잠깁니다.
+  </p>
+</div>
+{% endblock %}

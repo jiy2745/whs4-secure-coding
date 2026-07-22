@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% from "_macros.html" import status_badge %}
+{% block title %}사용자 조회{% endblock %}
+{% block content %}
+<div class="panel">
+  <h2>사용자 조회</h2>
+  <form class="row" method="get" action="{{ url_for('auth.user_list') }}">
+    <div class="field">
+      <label for="q">아이디 검색</label>
+      <input id="q" type="search" name="q" value="{{ q }}" maxlength="{{ config.SEARCH_QUERY_MAX }}">
+    </div>
+    <div><button type="submit">검색</button></div>
+  </form>
+</div>
+
+<div class="panel">
+  <table>
+    <tr><th>아이디</th><th>소개</th><th>상태</th><th>가입일</th><th></th></tr>
+    {% for u in users %}
+    <tr>
+      <td><a href="{{ url_for('auth.profile', user_id=u.id) }}">{{ u.username }}</a></td>
+      <td class="break muted">{{ (u.bio or '')[:60] }}</td>
+      <td>{{ status_badge(u.status) }}</td>
+      <td class="muted">{{ u.created_at[:10] }}</td>
+      <td>
+        {% if not current_user or u.id != current_user.id %}
+        <a class="btn btn-secondary btn-small" href="{{ url_for('chat.direct_chat', user_id=u.id) }}">쪽지</a>
+        {% endif %}
+      </td>
+    </tr>
+    {% else %}
+    <tr><td colspan="5" class="muted">검색 결과가 없습니다.</td></tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock %}

@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}오류 {{ code }}{% endblock %}
+{% block content %}
+<div class="panel">
+  <h2>{{ code }} 오류</h2>
+  {# 내부 예외 메시지·스택 트레이스·SQL 문은 절대 표시하지 않는다.
+     상세 원인은 instance/app.log 에만 기록된다. #}
+  <p>{{ message }}</p>
+  <div class="actions">
+    <a class="btn" href="{{ url_for('products.index') }}">홈으로</a>
+  </div>
+</div>
+{% endblock %}

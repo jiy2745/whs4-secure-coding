@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}내 신고 내역{% endblock %}
+{% block content %}
+<div class="panel">
+  <h2>내 신고 내역</h2>
+  {% if reports %}
+  <table>
+    <tr><th>일시</th><th>유형</th><th>대상</th><th>사유</th><th>처리 상태</th></tr>
+    {% for r in reports %}
+    <tr>
+      <td class="muted">{{ r.created_at }}</td>
+      <td>{{ '상품' if r.target_type == 'product' else '사용자' }}</td>
+      <td class="break">{{ r.target_label or '(삭제됨)' }}</td>
+      <td class="break">{{ r.reason }}</td>
+      <td>
+        {% if r.status == 'pending' %}<span class="badge badge-warn">검토 대기</span>
+        {% elif r.status == 'resolved' %}<span class="badge badge-ok">처리 완료</span>
+        {% else %}<span class="badge badge-muted">기각</span>{% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% else %}
+  <p class="muted">신고한 내역이 없습니다.</p>
+  {% endif %}
+</div>
+{% endblock %}

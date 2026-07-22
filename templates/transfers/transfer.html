@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% from "_macros.html" import render_field %}
+{% block title %}송금{% endblock %}
+{% block content %}
+<div class="panel">
+  <h2>송금하기</h2>
+  <p class="muted">
+    현재 잔액: <strong class="price">{{ '{:,}'.format(current_user.balance) }}원</strong> ·
+    1회 송금 한도 {{ '{:,}'.format(config.TRANSFER_MIN) }}~{{ '{:,}'.format(config.TRANSFER_MAX) }}원
+  </p>
+  <form method="post" action="{{ url_for('transfers.transfer') }}" novalidate>
+    {{ form.csrf_token }}
+    {{ form.product_id() }}
+    {{ render_field(form.recipient, placeholder="받는 사람 아이디") }}
+    <div class="field">
+      {{ form.amount.label }}
+      {{ form.amount(type="number", min=config.TRANSFER_MIN, max=config.TRANSFER_MAX, step=1) }}
+      {% if form.amount.errors %}
+      <ul class="errors">{% for e in form.amount.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+      {% endif %}
+    </div>
+    {{ render_field(form.memo, placeholder="예: 상품 대금") }}
+    {# 송금은 민감 작업이므로 비밀번호 재확인을 요구한다 #}
+    {{ render_field(form.password, autocomplete="current-password") }}
+    <div class="actions">
+      <button type="submit">송금</button>
+      <a class="btn btn-secondary" href="{{ url_for('transfers.wallet') }}">취소</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

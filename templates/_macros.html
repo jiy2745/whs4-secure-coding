@@ -1,0 +1,38 @@
+{# 폼 필드 렌더링 매크로.
+   - {{ field.label }} / {{ field(...) }} 는 Jinja2 autoescape 를 거치므로
+     사용자 입력이 그대로 HTML 로 해석되지 않는다.
+   - 오류 메시지는 서버측 검증 결과를 그대로 보여준다. #}
+
+{% macro render_field(field, autocomplete=None, placeholder=None, rows=None) %}
+<div class="field">
+  {{ field.label }}
+  {% if rows %}
+    {{ field(rows=rows, placeholder=placeholder, autocomplete=autocomplete) }}
+  {% else %}
+    {{ field(placeholder=placeholder, autocomplete=autocomplete) }}
+  {% endif %}
+  {% if field.errors %}
+    <ul class="errors">
+      {% for error in field.errors %}<li>{{ error }}</li>{% endfor %}
+    </ul>
+  {% endif %}
+</div>
+{% endmacro %}
+
+{% macro status_badge(status) %}
+  {% if status == 'active' %}<span class="badge badge-ok">판매중</span>
+  {% elif status == 'sold' %}<span class="badge badge-muted">판매완료</span>
+  {% elif status == 'blocked' %}<span class="badge badge-danger">차단됨</span>
+  {% elif status == 'dormant' %}<span class="badge badge-warn">휴면</span>
+  {% elif status == 'banned' %}<span class="badge badge-danger">정지</span>
+  {% else %}<span class="badge">{{ status }}</span>{% endif %}
+{% endmacro %}
+
+{% macro product_thumb(product) %}
+  {% if product.image_path %}
+    <img class="thumb" src="{{ url_for('products.uploaded_file', filename=product.image_path) }}"
+         alt="{{ product.title }} 사진">
+  {% else %}
+    <div class="thumb thumb-empty">이미지 없음</div>
+  {% endif %}
+{% endmacro %}

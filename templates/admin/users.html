@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% from "_macros.html" import status_badge %}
+{% block title %}사용자 관리{% endblock %}
+{% block content %}
+<div class="panel">
+  <h2>사용자 관리</h2>
+  <form class="row" method="get" action="{{ url_for('admin.users') }}">
+    <div class="field">
+      <label for="q">아이디 검색</label>
+      <input id="q" type="search" name="q" value="{{ q }}" maxlength="50">
+    </div>
+    <div><button type="submit">검색</button></div>
+  </form>
+</div>
+
+<div class="panel">
+  <table>
+    <tr><th>아이디</th><th>권한</th><th>상태</th><th>잔액</th><th>신고</th><th>최근 로그인</th><th>조치</th></tr>
+    {% for u in users %}
+    <tr>
+      <td><a href="{{ url_for('auth.profile', user_id=u.id) }}">{{ u.username }}</a></td>
+      <td>{% if u.role == 'admin' %}<span class="badge badge-warn">관리자</span>{% else %}일반{% endif %}</td>
+      <td>{{ status_badge(u.status) }}</td>
+      <td class="price">{{ '{:,}'.format(u.balance) }}</td>
+      <td>{{ u.report_count }}</td>
+      <td class="muted">{{ u.last_login_at or '-' }}</td>
+      <td>
+        <form class="inline-form" method="post" action="{{ url_for('admin.user_action') }}">
+          {{ form.csrf_token }}
+          <input type="hidden" name="user_id" value="{{ u.id }}">
+          {{ form.action() }}
+          <button type="submit" class="btn-small">실행</button>
+        </form>
+        <form class="inline-form" method="post" action="{{ url_for('admin.adjust_balance') }}">
+          {{ balance_form.csrf_token }}
+          <input type="hidden" name="user_id" value="{{ u.id }}">
+          <input type="number" name="amount" value="0" step="1"
+                 min="{{ -config.TRANSFER_MAX }}" max="{{ config.TRANSFER_MAX }}">
+          <button type="submit" class="btn-secondary btn-small">잔액조정</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock %}

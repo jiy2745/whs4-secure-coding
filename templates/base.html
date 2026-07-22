@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}중고거래 플랫폼{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  {# CSP 로 인라인 스크립트가 금지되어 있으므로, JS 에 넘길 값은 data-* 속성으로 전달한다. #}
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="{{ url_for('products.index') }}">🛒 Tiny Market</a>
+  <nav>
+    <a href="{{ url_for('products.index') }}">상품</a>
+    {% if current_user %}
+      <a href="{{ url_for('products.create') }}">상품 등록</a>
+      <a href="{{ url_for('chat.global_chat') }}">전체 채팅</a>
+      <a href="{{ url_for('chat.inbox') }}">쪽지</a>
+      <a href="{{ url_for('auth.user_list') }}">사용자</a>
+      <a href="{{ url_for('transfers.wallet') }}">지갑</a>
+      <a href="{{ url_for('auth.my_page') }}">마이페이지</a>
+      {% if is_admin %}<a class="admin-link" href="{{ url_for('admin.dashboard') }}">관리자</a>{% endif %}
+      <form class="inline-form" method="post" action="{{ url_for('auth.logout') }}">
+        {# CSRF 토큰: 모든 상태 변경 요청에 필수 #}
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button type="submit" class="linkish">로그아웃</button>
+      </form>
+      <span class="whoami">{{ current_user.username }} ({{ '{:,}'.format(current_user.balance) }}원)</span>
+    {% else %}
+      <a href="{{ url_for('auth.login') }}">로그인</a>
+      <a href="{{ url_for('auth.register') }}">회원가입</a>
+    {% endif %}
+  </nav>
+</header>
+
+<main class="container">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <ul class="flashes">
+        {% for category, message in messages %}
+          <li class="flash flash-{{ category }}">{{ message }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  {% endwith %}
+
+  {% block content %}{% endblock %}
+</main>
+
+<footer class="footer">
+  <span>WHS 시큐어 코딩 과제 — Tiny Second-hand Shopping Platform</span>
+</footer>
+{% block scripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% from "_macros.html" import render_field %}
+{% block title %}비밀번호 재확인{% endblock %}
+{% block content %}
+<div class="panel">
+  <h2>비밀번호 재확인</h2>
+  <p class="muted">민감한 작업(비밀번호 변경, 관리자 기능)을 수행하기 전에 본인 확인이 필요합니다.</p>
+  <form method="post" action="{{ url_for('auth.reauth') }}" novalidate>
+    {{ form.csrf_token }}
+    <input type="hidden" name="next" value="{{ next_url }}">
+    {{ render_field(form.password, autocomplete="current-password") }}
+    <div class="actions">
+      <button type="submit">확인</button>
+      <a class="btn btn-secondary" href="{{ url_for('products.index') }}">취소</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

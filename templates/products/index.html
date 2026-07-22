@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% from "_macros.html" import render_field, status_badge, product_thumb %}
+{% block title %}상품 목록{% endblock %}
+{% block content %}
+
+<div class="panel">
+  <h2>상품 검색</h2>
+  {# GET 폼: 상태를 바꾸지 않으므로 CSRF 토큰이 필요 없다. 값은 서버에서 다시 검증된다. #}
+  <form class="row" method="get" action="{{ url_for('products.index') }}">
+    <div class="field">
+      {{ form.q.label }}
+      {{ form.q(type="search", maxlength=config.SEARCH_QUERY_MAX, placeholder="상품명 또는 설명") }}
+    </div>
+    <div class="field">{{ form.min_price.label }}{{ form.min_price(type="number", min=0) }}</div>
+    <div class="field">{{ form.max_price.label }}{{ form.max_price(type="number", min=0) }}</div>
+    <div class="field">{{ form.sort.label }}{{ form.sort() }}</div>
+    <div><button type="submit">검색</button></div>
+  </form>
+  {% if form.errors %}
+  <ul class="errors">
+    {% for field, errors in form.errors.items() %}
+      {% for error in errors %}<li>{{ error }}</li>{% endfor %}
+    {% endfor %}
+  </ul>
+  {% endif %}
+</div>
+
+<div class="panel">
+  <h2>전체 상품 {{ total }}건</h2>
+  {% if products %}
+  <div class="grid">
+    {% for p in products %}
+    <div class="card">
+      <a href="{{ url_for('products.detail', product_id=p.id) }}">{{ product_thumb(p) }}</a>
+      <div class="body">
+        {# 목록에서는 이름만 노출하고, 클릭하면 상세 페이지로 이동 (시스템 설계 요구사항) #}
+        <p class="title"><a href="{{ url_for('products.detail', product_id=p.id) }}">{{ p.title }}</a></p>
+        <p class="price">{{ '{:,}'.format(p.price) }}원 {{ status_badge(p.status) }}</p>
+        <p class="muted">판매자 <a href="{{ url_for('auth.profile', user_id=p.seller_id) }}">{{ p.seller_name }}</a></p>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <div class="pagination">
+    {% if page > 1 %}
+      <a class="btn btn-secondary btn-small"
+         href="{{ url_for('products.index', page=page-1, q=form.q.data, min_price=form.min_price.data,
+                          max_price=form.max_price.data, sort=form.sort.data) }}">이전</a>
+    {% endif %}
+    <span class="muted">{{ page }} 페이지</span>
+    {% if has_next %}
+      <a class="btn btn-secondary btn-small"
+         href="{{ url_for('products.index', page=page+1, q=form.q.data, min_price=form.min_price.data,
+                          max_price=form.max_price.data, sort=form.sort.data) }}">다음</a>
+    {% endif %}
+  </div>
+  {% else %}
+  <p class="muted">조건에 맞는 상품이 없습니다.</p>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% from "_macros.html" import status_badge, product_thumb %}
+{% block title %}{{ profile_user.username }} 프로필{% endblock %}
+{% block content %}
+<div class="panel">
+  <h2>{{ profile_user.username }}
+    {% if profile_user.role == 'admin' %}<span class="badge badge-warn">관리자</span>{% endif %}
+    {% if profile_user.status != 'active' %}{{ status_badge(profile_user.status) }}{% endif %}
+  </h2>
+  <p class="muted">가입일 {{ profile_user.created_at }}</p>
+  {# 소개글은 autoescape 로 이스케이프되어 출력된다 (HTML 태그가 실행되지 않음) #}
+  <p class="break">{{ profile_user.bio or '소개글이 없습니다.' }}</p>
+
+  {% if not is_self %}
+  <div class="actions">
+    <a class="btn" href="{{ url_for('chat.direct_chat', user_id=profile_user.id) }}">1:1 채팅</a>
+    <a class="btn btn-secondary" href="{{ url_for('transfers.transfer', to=profile_user.username) }}">송금</a>
+    <a class="btn btn-danger btn-small"
+       href="{{ url_for('reports.create', target_type='user', target_id=profile_user.id) }}">신고</a>
+  </div>
+  {% endif %}
+</div>
+
+<div class="panel">
+  <h2>판매 중인 상품</h2>
+  {% if products %}
+  <div class="grid">
+    {% for p in products %}
+    <div class="card">
+      <a href="{{ url_for('products.detail', product_id=p.id) }}">{{ product_thumb(p) }}</a>
+      <div class="body">
+        <p class="title"><a href="{{ url_for('products.detail', product_id=p.id) }}">{{ p.title }}</a></p>
+        <p class="price">{{ '{:,}'.format(p.price) }}원 {{ status_badge(p.status) }}</p>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <p class="muted">등록된 상품이 없습니다.</p>
+  {% endif %}
+</div>
+{% endblock %}

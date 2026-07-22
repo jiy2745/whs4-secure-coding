@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}관리자 대시보드{% endblock %}
+{% block content %}
+<div class="panel">
+  <h2>관리자 대시보드</h2>
+  <div class="actions">
+    <a class="btn btn-secondary" href="{{ url_for('admin.users') }}">사용자 관리</a>
+    <a class="btn btn-secondary" href="{{ url_for('admin.products') }}">상품 관리</a>
+    <a class="btn btn-secondary" href="{{ url_for('admin.reports') }}">신고 관리</a>
+    <a class="btn btn-secondary" href="{{ url_for('admin.logs') }}">감사 로그</a>
+  </div>
+</div>
+
+<div class="panel">
+  <h2>현황</h2>
+  <div class="stats">
+    <div class="stat"><div class="muted">전체 사용자</div><div class="num">{{ stats.users }}</div></div>
+    <div class="stat"><div class="muted">활성 사용자</div><div class="num">{{ stats.active_users }}</div></div>
+    <div class="stat"><div class="muted">휴면/정지</div><div class="num">{{ stats.dormant_users }}</div></div>
+    <div class="stat"><div class="muted">전체 상품</div><div class="num">{{ stats.products }}</div></div>
+    <div class="stat"><div class="muted">차단 상품</div><div class="num">{{ stats.blocked_products }}</div></div>
+    <div class="stat"><div class="muted">미처리 신고</div><div class="num">{{ stats.pending_reports }}</div></div>
+    <div class="stat"><div class="muted">송금 건수</div><div class="num">{{ stats.transfers }}</div></div>
+    <div class="stat"><div class="muted">송금 총액</div><div class="num">{{ '{:,}'.format(stats.transfer_volume) }}</div></div>
+  </div>
+</div>
+
+<div class="panel">
+  <h2>최근 보안 이벤트</h2>
+  <table>
+    <tr><th>시각</th><th>행위자</th><th>동작</th><th>상세</th><th>IP</th></tr>
+    {% for log in logs %}
+    <tr>
+      <td class="muted">{{ log.created_at }}</td>
+      <td>{{ log.username or '-' }}</td>
+      <td>{{ log.action }}</td>
+      <td class="break">{{ log.detail }}</td>
+      <td class="muted">{{ log.ip }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock %}
