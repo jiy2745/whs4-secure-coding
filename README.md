@@ -202,4 +202,8 @@ secure-coding/
 
 ## 8. 라이선스 / 참고
 
-교육 과제용 프로젝트입니다. 참고 자료: KISA 시큐어 코딩 가이드, OWASP Top 10, OWASP ASVS.
+교육 과제용 프로젝트입니다.
+
+- 과제 원본 스펙/스켈레톤: <https://github.com/ugonfor/secure-coding>
+  (요구사항과 기능 명세를 따랐으며, 애플리케이션 코드는 보안 요구사항에 맞춰 새로 작성했습니다.)
+- 참고 자료: KISA 시큐어 코딩 가이드, OWASP Top 10, OWASP ASVS.
