@@ -90,9 +90,15 @@ python app.py
 
 ### 4.1 ngrok 설치
 
+공식 문서 기준 apt 설치 방법입니다.
+
 ```bash
-sudo snap install ngrok
-# 또는 공식 문서: https://ngrok.com/downloads/linux
+curl -sSL https://ngrok-agent.s3.amazonaws.com/ngrok.asc \
+  | sudo tee /etc/apt/trusted.gpg.d/ngrok.asc >/dev/null \
+  && echo "deb https://ngrok-agent.s3.amazonaws.com bookworm main" \
+  | sudo tee /etc/apt/sources.list.d/ngrok.list \
+  && sudo apt update \
+  && sudo apt install ngrok
 ```
 
 계정 토큰 등록(최초 1회). 토큰은 https://dashboard.ngrok.com/get-started/your-authtoken 에서 발급받습니다.
