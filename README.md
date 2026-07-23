@@ -90,13 +90,17 @@ python app.py
 
 ### 4.1 ngrok 설치
 
+WSL(우분투)에서는 apt 로 설치하는 것을 권장합니다.
+
 ```bash
-# snap 사용 시
-sudo snap install ngrok
-# 또는 공식 문서: https://ngrok.com/downloads/linux
+curl -sSL https://ngrok-agent.s3.amazonaws.com/ngrok.asc \
+  | sudo tee /etc/apt/trusted.gpg.d/ngrok.asc >/dev/null \
+  && echo "deb https://ngrok-agent.s3.amazonaws.com buster main" \
+  | sudo tee /etc/apt/sources.list.d/ngrok.list \
+  && sudo apt update && sudo apt install ngrok
 ```
 
-계정 토큰 등록(최초 1회):
+계정 토큰 등록(최초 1회). 토큰은 https://dashboard.ngrok.com/get-started/your-authtoken 에서 발급받습니다.
 
 ```bash
 ngrok config add-authtoken <YOUR_TOKEN>
@@ -104,19 +108,23 @@ ngrok config add-authtoken <YOUR_TOKEN>
 
 ### 4.2 실행
 
-터미널 1 — 애플리케이션 (HTTPS 로 서비스되므로 Secure 쿠키를 켠다):
+애플리케이션을 백그라운드로 실행한 뒤(HTTPS 로 서비스되므로 Secure 쿠키를 켠다), 같은 터미널에서 터널을 엽니다.
 
 ```bash
-SESSION_COOKIE_SECURE=1 TRUST_PROXY_HEADERS=1 python app.py
-```
+# 1) 앱을 백그라운드로 실행
+SESSION_COOKIE_SECURE=1 TRUST_PROXY_HEADERS=1 python app.py &
 
-터미널 2 — 터널:
-
-```bash
+# 2) 터널 열기
 ngrok http 5000
 ```
 
 출력된 `https://xxxx-xx-xx-xx-xx.ngrok-free.app` 주소로 접속합니다.
+
+끝낼 때는 ngrok 을 `Ctrl+C` 로 멈춘 뒤, 백그라운드 앱도 종료합니다.
+
+```bash
+kill %1     # 백그라운드로 띄운 앱 종료 (안 되면: pkill -f "python app.py")
+```
 
 > **주의**
 > - `SESSION_COOKIE_SECURE=1` 을 켜지 않으면 HTTPS 로 접속해도 쿠키에 Secure 플래그가 붙지 않습니다.
