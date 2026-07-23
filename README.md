@@ -90,14 +90,9 @@ python app.py
 
 ### 4.1 ngrok 설치
 
-WSL(우분투)에서는 apt 로 설치하는 것을 권장합니다.
-
 ```bash
-curl -sSL https://ngrok-agent.s3.amazonaws.com/ngrok.asc \
-  | sudo tee /etc/apt/trusted.gpg.d/ngrok.asc >/dev/null \
-  && echo "deb https://ngrok-agent.s3.amazonaws.com buster main" \
-  | sudo tee /etc/apt/sources.list.d/ngrok.list \
-  && sudo apt update && sudo apt install ngrok
+sudo snap install ngrok
+# 또는 공식 문서: https://ngrok.com/downloads/linux
 ```
 
 계정 토큰 등록(최초 1회). 토큰은 https://dashboard.ngrok.com/get-started/your-authtoken 에서 발급받습니다.
